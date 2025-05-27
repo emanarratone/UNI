@@ -35,6 +35,8 @@ Piattaforma di live streaming con supporto a utenti registrati e non, contenuti 
 - **Hosting**
   - Ogni canale richiede pagamento mensile per hosting.
 
+![image](https://github.com/user-attachments/assets/d7b5bf65-75e4-4752-b742-e1fe4e1befc3)
+
 ## Regole e vincoli principali
 
 - Utenti registrati devono fornire dati identificativi.
@@ -48,3 +50,16 @@ Piattaforma di live streaming con supporto a utenti registrati e non, contenuti 
 - Schema E-R con eliminazione di generalizzazioni e accorpamento entità figlie (es. Clip e Video).
 - Scelte di ridondanza valutate per performance (chat e portafoglio).
 - Normalizzazione con vincoli di integrità e chiavi primarie/esterne esplicite.
+
+  ![image](https://github.com/user-attachments/assets/a79fa60f-e91d-453a-81f0-0c0a9f77cd72)
+
+
+
+
+
+
+
+
+
+
+
