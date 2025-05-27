@@ -28,4 +28,4 @@ Il materiale qui presente rappresenta una parte significativa del mio percorso f
 
 - Ogni sottocartella include, se necessario, un proprio file `README.md` con descrizioni specifiche.
 - Alcuni progetti potrebbero contenere codice non definitivo o sviluppato a fini didattici.
-"""
+
