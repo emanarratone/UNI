@@ -26,3 +26,14 @@ Se è presente un `Makefile`, puoi usare:
 
 ```sh
 make clean all
+```
+
+### Manualmente con gcc
+```sh
+gcc -o nome_programma nome_file.c
+```
+### Dopo ogni compilazione (ad esempio dopo make clean all), è consigliato eseguire:
+
+```sh
+sh valgrind --tool=memcheck --leak-check=full ./nomefile
+```
