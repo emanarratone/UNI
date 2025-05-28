@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ChoiceBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.RadioButton?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="360.0" prefWidth="364.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="upo20050533.trials.trialappfx.turniController">
+   <children>
+      <Label layoutX="28.0" layoutY="45.0" text="Lunedì" />
+      <Label layoutX="24.0" layoutY="79.0" text="Martedì" />
+      <Label layoutX="19.0" layoutY="122.0" text="Mercoledì" />
+      <Label layoutX="25.0" layoutY="164.0" text="Giovedì" />
+      <Label layoutX="24.0" layoutY="206.0" text="Venerdì" />
+      <Label layoutX="27.0" layoutY="244.0" text="Sabato" />
+      <Label layoutX="19.0" layoutY="288.0" text="Domenica" />
+      <Button fx:id="submit" layoutX="148.0" layoutY="320.0" mnemonicParsing="false" onAction="#HandleTurni" text="Conferma" />
+      <Label layoutX="120.0" layoutY="23.0" text="Ferie" />
+      <RadioButton fx:id="LF" layoutX="125.0" layoutY="45.0" mnemonicParsing="false" />
+      <RadioButton fx:id="DF" layoutX="125.0" layoutY="288.0" mnemonicParsing="false" />
+      <RadioButton fx:id="SF" layoutX="125.0" layoutY="244.0" mnemonicParsing="false" />
+      <RadioButton fx:id="VF" layoutX="125.0" layoutY="206.0" mnemonicParsing="false" />
+      <RadioButton fx:id="GF" layoutX="125.0" layoutY="164.0" mnemonicParsing="false" />
+      <RadioButton fx:id="MEF" layoutX="125.0" layoutY="122.0" mnemonicParsing="false" />
+      <RadioButton fx:id="MAF" layoutX="125.0" layoutY="79.0" mnemonicParsing="false" />
+      <ChoiceBox fx:id="L" layoutX="215.0" layoutY="40.0" prefHeight="26.0" prefWidth="110.0" />
+      <ChoiceBox fx:id="D" layoutX="215.0" layoutY="283.0" prefHeight="26.0" prefWidth="110.0" />
+      <ChoiceBox fx:id="S" layoutX="215.0" layoutY="247.0" prefHeight="26.0" prefWidth="110.0" />
+      <ChoiceBox fx:id="V" layoutX="215.0" layoutY="202.0" prefHeight="26.0" prefWidth="110.0" />
+      <ChoiceBox fx:id="G" layoutX="215.0" layoutY="158.0" prefHeight="26.0" prefWidth="110.0" />
+      <ChoiceBox fx:id="ME" layoutX="215.0" layoutY="117.0" prefHeight="26.0" prefWidth="110.0" />
+      <ChoiceBox fx:id="MA" layoutX="215.0" layoutY="75.0" prefHeight="18.0" prefWidth="110.0" />
+      <Label layoutX="256.0" layoutY="23.0" text="Turni" />
+   </children>
+</AnchorPane>
