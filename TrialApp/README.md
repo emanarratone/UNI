@@ -59,8 +59,3 @@ Un oggetto statico `User` viene usato per gestire il contesto utente dopo il log
 - In `Visita`: enumerazione dei parametri, classi interne per livelli clinici.
 - In `PersonaleSanitario`: enumerazione dei reparti ospedalieri.
 
-## Requisiti
-
-- JavaFX
-- Java >= 11
-- File system access per salvataggio/caricamento dati
