@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ChoiceBox?>
+<?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.PasswordField?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<AnchorPane prefHeight="360.0" prefWidth="364.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="upo20050533.trials.trialappfx.PSInsertController">
+   <children>
+      <Label layoutX="110.0" layoutY="21.0" text="Tutti i dati sono obbligatori" />
+      <TextField fx:id="PSINome" layoutX="52.0" layoutY="70.0" prefHeight="26.0" prefWidth="95.0" />
+      <Label layoutX="83.0" layoutY="52.0" text="Nome" />
+      <TextField fx:id="PSICognome" layoutX="222.0" layoutY="70.0" prefHeight="26.0" prefWidth="95.0" />
+      <Label layoutX="244.0" layoutY="52.0" text="Cognome" />
+      <DatePicker fx:id="PSIdataN" editable="false" layoutX="51.0" layoutY="147.0" prefHeight="26.0" prefWidth="95.0" />
+      <Label layoutX="60.0" layoutY="129.0" text="Data di nascita" />
+      <DatePicker fx:id="PSIdataAss" editable="false" layoutX="222.0" layoutY="147.0" prefHeight="26.0" prefWidth="95.0" />
+      <Label layoutX="219.0" layoutY="129.0" text="Data di Assunzione" />
+      <Button fx:id="PSInsert" layoutX="148.0" layoutY="305.0" mnemonicParsing="false" onAction="#handlePSInsert" text="Conferma" />
+      <PasswordField fx:id="psw" layoutX="107.0" layoutY="267.0" />
+      <Label layoutX="122.0" layoutY="249.0" text="Inserisci una password" />
+      <TextField fx:id="spec" layoutX="222.0" layoutY="206.0" prefHeight="26.0" prefWidth="95.0" />
+      <Label layoutX="227.0" layoutY="191.0" text="Specializzazione" />
+      <ChoiceBox fx:id="PSIrep" layoutX="51.0" layoutY="206.0" prefHeight="26.0" prefWidth="95.0" />
+      <Label layoutX="77.0" layoutY="191.0" text="Reparto" />
+   </children>
+</AnchorPane>

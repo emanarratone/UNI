@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ChoiceBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<SplitPane dividerPositions="0.40521064301552107" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" orientation="VERTICAL" prefHeight="362.4" prefWidth="417.6" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="upo20050533.trials.trialappfx.statisticheController">
+  <items>
+    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="130.0" prefWidth="416.0">
+         <children>
+            <Label layoutX="42.0" layoutY="14.0" text="Inserire l'id del paziente" />
+            <TextField fx:id="id_paz" layoutX="30.0" layoutY="32.0" />
+            <Label layoutX="239.0" layoutY="5.0" text="Di quali valori si desidera " />
+            <Label layoutX="255.0" layoutY="23.0" text="avere le statistiche?" />
+            <Button fx:id="Cerca" layoutX="284.0" layoutY="98.0" mnemonicParsing="false" onAction="#handleRicerca" text="Cerca" />
+            <ChoiceBox fx:id="Parametri" layoutX="246.0" layoutY="44.0" prefHeight="26.0" prefWidth="116.0" />
+            <ChoiceBox fx:id="ordine" layoutX="42.0" layoutY="97.0" prefHeight="26.0" prefWidth="116.0" />
+            <Label layoutX="62.0" layoutY="79.0" text="In che ordine?" />
+         </children></AnchorPane>
+      <SplitPane dividerPositions="0.5" prefHeight="160.0" prefWidth="200.0">
+         <items>
+            <TextArea fx:id="date_sort" editable="false" prefHeight="200.0" prefWidth="200.0" text="Visite in ordine cronologico" />
+            <TextArea fx:id="stat_sort" editable="false" prefHeight="200.0" prefWidth="200.0" text="Risultati per la ricerca" />
+         </items>
+      </SplitPane>
+  </items>
+</SplitPane>

@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.text.Font?>
+
+<SplitPane dividerPositions="0.14106425702811246" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" orientation="VERTICAL" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="upo20050533.trials.trialappfx.homeController">
+  <items>
+    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="62.0" prefWidth="598.0">
+         <children>
+            <Label alignment="CENTER" layoutX="264.0" layoutY="10.0" prefHeight="36.0" prefWidth="598.4" text="TrialApp" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+               <font>
+                  <Font size="19.0" />
+               </font></Label>
+            <Button fx:id="user" layoutX="475.0" layoutY="13.0" mnemonicParsing="false" onAction="#handlePers" prefHeight="26.0" prefWidth="97.0" text="Area Personale" />
+         </children></AnchorPane>
+    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
+         <children>
+            <SplitPane dividerPositions="0.17747326203208555" layoutX="-1.0" layoutY="-2.0" prefHeight="364.0" prefWidth="600.0">
+              <items>
+                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
+                     <children>
+                        <Button fx:id="recordInsert" layoutX="-44.0" layoutY="42.0" mnemonicParsing="false" onAction="#handleRecord" prefHeight="26.0" prefWidth="190.0" text="Inserisci paziente" />
+                        <Button fx:id="Ricerca" layoutX="-44.0" layoutY="200.0" mnemonicParsing="false" onAction="#handleRicerca" prefHeight="26.0" prefWidth="190.0" text="Ricerca" />
+                        <Button fx:id="ricercaEta" layoutX="-44.0" layoutY="121.0" mnemonicParsing="false" onAction="#handleRicercaEta" prefHeight="26.0" prefWidth="190.0" text="Ricerca per età" />
+                        <Button fx:id="Statistiche" layoutX="-44.0" layoutY="279.0" mnemonicParsing="false" onAction="#handleStatistiche" prefHeight="26.0" prefWidth="190.0" text="Statistiche" />
+                     </children>
+                  </AnchorPane>
+                  <Pane fx:id="Pane" prefHeight="362.0" prefWidth="417.0" />
+              </items>
+            </SplitPane>
+         </children>
+      </AnchorPane>
+  </items>
+</SplitPane>

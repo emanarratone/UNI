@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="362.4" prefWidth="417.6" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="upo20050533.trials.trialappfx.Record_insert_controller">
+   <children>
+      <TextField fx:id="annoN" layoutX="39.0" layoutY="77.0" />
+      <TextField fx:id="ID" layoutX="231.0" layoutY="77.0" />
+      <DatePicker fx:id="dataR" layoutX="122.0" layoutY="169.0" />
+      <Label layoutX="38.0" layoutY="51.0" prefHeight="18.0" prefWidth="150.0" text="Inserire l'anno di nascita*" />
+      <Label layoutX="230.0" layoutY="51.0" prefHeight="18.0" prefWidth="150.0" text="Inserire l'id" />
+      <Label layoutX="122.0" layoutY="143.0" prefHeight="18.0" prefWidth="175.0" text="Inserire il giorno di registrazione" />
+      <Label layoutX="24.0" layoutY="314.0" prefHeight="18.0" prefWidth="150.0" text="*CAMPO OBBLIGATORIO" textFill="#949494" />
+      <Button fx:id="insertPaziente" layoutX="175.0" layoutY="242.0" mnemonicParsing="false" onAction="#handleInsertPaziente" text="Conferma" />
+   </children>
+</AnchorPane>
