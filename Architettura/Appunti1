@@ -1,0 +1,528 @@
+.constant
+OBJREF 0x40
+K 45
+.end-constant
+
+.main
+
+.var
+x
+y
+.end-var
+
+bipush 12
+istore y
+bipush 10
+ldc_w K
+isub
+istore x
+ldc_w OBJREF
+iload x
+invokevirtual abs
+bipush 2
+iadd 
+iload y
+isub
+istore y
+halt
+.end-main
+
+
+.method abs(n)
+iload x
+iflt cambiasegno
+iload x
+ireturn
+cambiasegno:
+bipush 0
+iload x
+isub
+ireturn
+.end-method
+
+
+---------------------------------
+
+.constant 
+OBJREF 0x40
+K 33
+.end-constant
+
+.main
+.var
+x
+.end-var
+bipush -3
+ldc_w K
+dup 
+iadd
+isub
+istore x
+bipush 23
+ldc_w OBJREF
+bipush 2
+iload x
+bipush 1
+iadd
+invokevirtual f
+iadd
+ldc_w K
+isub
+istore y
+halt
+.end-main
+
+
+---------------------------------
+
+x il compilatore:
+0x88 iinc1 varnum
+
+x il microprogramma:
+.label iinc11 0x88
+ 
+
+iinc11 h=lv
+iinc12 mar=mbru+h;rd
+iinc13 pc=pc+1;fetch
+iinc14 mdr=mdr+1;wr;goto Main1
+
+
+---------------------------------
+
+x il compilatore:
+0x85 mul2
+
+x il microprogramma:
+.label mul21 0x85
+
+mul21 h=tos
+mul22 mdr=tos=tos+h
+mul23 mar=sp;wr;goto Main1
+
+
+---------------------------------
+
+x il compilatore:
+0x85 setvar varnum const
+
+x il microprogramma:
+.label setvar1 0x85
+
+setvar1 h=lv
+setvar2 pc=pc+1;fetch
+setvar3 mar=mbru+h;rd
+setvar4 pc=pc+1;fetch
+setvar5 mdr=mbr;wr;goto Main1
+
+
+---------------------------------
+
+x il compilatore:
+0xc1 inor
+
+x il microprogramma:
+.label inor1 0xc1
+
+inor1 mar=sp-1;rd
+inor2 h=tos
+inor3 h=mdr or h
+inor4 mdr=tos=not h;wr;goto Main1
+
+
+---------------------------------
+
+x il compilatore:
+0x88 clr varname
+
+x il microprogramma:
+.label clr1 0x88
+
+clr1 h=lv
+clr2 mar=mbru+h;rd
+clr3 mdr=0;wr			//a differenza di istore non decremento lo stack
+clr5 pc=pc+1			// perchè non sto inserendo un valore presente sullo stack
+clr6 goto Main1			//ma un valore (0) che setto manualmente
+
+
+----------------------------------
+
+x il compilatore:
+0x98 odd
+
+x il microprogramma:
+.label odd1 0x98
+
+odd1 h=1
+odd2 mdr=tos=tos and h
+odd3mar=sp;wr;goto Main1
+
+
+--------------------------------
+
+x il compilatore: 
+0x85 minus1
+
+x il microprogramma:
+.label minus11 0x85
+
+minus11 MAR=SP;rd
+minus12 PC=PC+1;fetch
+minus13 MDR=TOS=TOS-1;wr;goto Main1
+
+
+--------------------------------
+int abs(int x){
+
+	if(x<0){
+		x=0-x;
+	}	
+return(x);
+}
+
+int main(){
+int y=12
+int x=-1-42
+y=(abs(x)+5)-y;
+}
+
+
+----------------------------------
+
+4.1b) 
+prelievo di una parola IMAR = IMAR + 1
+MBR1: PC = PC+1
+MBR2: PC = PC+2
+C)Se una istruzione di salto imposta PC con il valore 0x5F7A5, quale valore assume IMAR?
+PC = 0x5F7A5 → 0101 1111 0111 1010 0101
+W(PC): indirizzo della parola in cui è presente il byte puntato da PC
+0001 0111 1101 1110 1001 (0x17DE9)
+IMAR = W(PC)+1 = 0001 0111 1101 1110 1010 (0x17DEA, l’indirizzo della parola successiva
+a quella in cui è presente il byte puntato da PC, cioè l’indirizzo della successiva parola da
+caricare)
+2.
+A) Descrivere il ruolo dei registri di MIC1 nel micro interprete per IJVM
+MAR, viene utilizzato per contenere l'indirizzo di memoria che deve essere letto o scritto, usato per accedere alla memoria principale e recuperare istruzioni o dati.
+MDR, è utilizzato per contenere i dati letti dalla memoria principale o i dati che devono essere scritto nella memoria principale.
+PC, è il registro che tiene traccia dell'indirizzo della prossima istruzione da eseguire, il PC viene incrementato in modo da puntare alla successiva operazione
+MBR, contiene il byte letto all'indirizzo PC dalla control store
+MBRU, contiene il byte letto all'indirizzo PC dalla control store, la u sta per UNSIGNED, senza segno
+SP, viene utilizzato per mantenere la traccia dell'indirizzo corrente nello stack. Utilizzato principalmente nelle operazioni di gestione dello stack.
+LV, è utilizzato per memorizzare variabili locali di un metodo.
+CPP, contiene l'indirizzo base della Constant Pool, che è la struttura dati contenente costante e riferimenti ad oggetti utilizzato nell'esecuzione del programma.
+TOS, utilizzato per mantenere traccia del valore in cima allo stack.
+OPC, è il registro utilizzato per contenere il codice operativo della istruzione corrente
+H, è l'unico registro collegato al bus A, quindi è necessario per svolgere le operazioni con due dati.
+B) Analizzare se e come tali ruoli cambiano nell’architettura MIC-2
+Nel MIC2 sono da considerare: 
+H, non è più l'unico registro collegato al bus A, quindi per effettuare operazioni con due dati, non è più obbligatorio usare H.
+MBR1/MBR1U, Introducendo la Fetch Unit, il registro MBR è sostituito da: MBR1, un registro a 8 but con 2 interfacce verso il bus (MBR1 e MBR1u), che offrono l'estensione a 32 bit SIGNED e l'estensione a 32 UNSIGNED
+MBR2/MBR2U, registro a 16 bit con 2 interfacce verso il bus A
+PC, si anticipano i cicli di interpretazione Main1, quindi l'istruzione PC=PC+1; fetch; viene effettuato prima.
+
+3.
+A) Descrivere come l’architettura MIC-2 evolve nell’architettura MIC-3 e come tale evoluzione abilita
+l’esecuzione in pipeline delle sequenze di microistruzioni che realizzano le istruzioni IJVM 
+
+L'evoluzione dell'architettura MIC-2 a MIC-3 consiste nell'implementazione di 3 registri(latch) intermedi posti sui bus da cui prendono il nome (Latch A, B, C), grazie a questi registri è possibile importare il concetto di pipeline all'interno dell'architettura MIC:
+ogni microistruzione richiede un giro completo del percorso dati, il quale occupa 3 cicli di clock.
+1 ciclo abilita i registri ai latch A&B
+2 ciclo viene caricato il latch C con il risultato di ALU e SHIFTER
+3 ciclo vengono trasferiti i risultati dal latch C al registro corrispondente.
+Queste istruzioni vengono eseguite in parallelo moltiplicando così la produttività e diminuendo il periodo di clock (quasi 1/3 di quello in MIC-2), il micro-codice delle istruzioni IJVM definito per MIC-2 può essere eseguito su MIC-3 sfruttando il pipeline nell'esecuzione delle microistruzioni basato sulla divisione del percorso dati in tre parti indipendenti.
+
+B) Eseguire il codice di ILOAD sulla architettura MIC-3, indicando eventuali dipendenze.
+
+MAR=LV+MBR1U; rd
+A=MBR1U
+B=LV
+C=A+B
+MAR=C
+MDR=mem[MAR];rd
+H=MBR1
+A=MBR1
+C=A
+H=C
+MDR=MDR+H;wr;goto(MBR1)
+A=MDR
+B=H
+C=A+B
+MDR=C;we
+MDR=mem[MAR];goto(MBR1)
+iinc3 può leggere MDR solo dopo la conclusione della rd iniziata in iinc1 (RAW – Read after Write)
+un’altra dipendenza di tipo RAW è su H, tra iinc2 ed iinc3; questa non causa una bolla in quanto
+l’esecuzione di iinc3 è già ritardata per la dipendenza RAW su MDR
+
+C) Comparare in termini di cicli di clock la durata dell’esecuzione di ILOAD su MIC-1, MIC-2 e MIC-3.
+iload mic1: 5 iload + 1 Main1
+iload mic2: 3 cicli clock
+iload mic3: 8 cicli clock
+mic-3 è la più veloce perché considerando che MIC-1 e MIC-2 è 3 volte quello di MIC-3 e si hanno i seguenti valori:
+MIC-1: 6*3 = 18 cicli clock MIC-3
+MIC-2: 3*3 = 9 cicli clock MIC-3
+MIC-3: 8 cicli clock
+
+4.
+A) Descrivere come l’architettura MIC-2 evolve nell’architettura MIC-3 e come tale evoluzione abilita
+l’esecuzione in pipeline delle sequenze di microistruzioni che realizzano le istruzioni IJVM
+L'evoluzione MIC-2 a MIC-3 consiste in:
+vengono introdotti 3 registri(latch) intermedi posti nei bus da cui prendono nome(A, B, C) grazie a questi registri si può importare il concetto di  pipeline: il percorso dati delle microcostruzioni impiegeranno 3 cicli clock:
+1.abilitazione latch A e B
+2.viene caricato in latch C i valori restituiti da ALU e shifter
+3.infine vengono trasferiti i risultati dal latch C al registro corrispondente
+ Queste istruzioni vengon eseguite in parallelo moltiplicando la produttività e diminuendo il periodo clock (1/3 in meno rispetto a MIC-2)
+
+B) Eseguire il codice di IADD sulla architettura MIC-3, indicando eventuali dipendenze di tipo RAW.
+
+MAR=SP=SP-1; rd
+1.B=SP
+2.C=B-1
+3.MAR=C;rd
+4.MDR=mem(MAR)
+
+H=TOS
+2.B=TOS
+3.C=B
+4.H=C
+
+MDR=TOS=MDR+H;wr;goto(MBR1)
+5.B=MDR, A=H
+6.C=A+B
+7.MDR=TOS=C;wr
+8.mem=MDR;goto(MBR1)
+ciclo 5 può leggere MDR solo dopo la conclusione della rd iniziata in ciclo 4 dipendenza di tipo RAW
+
+C) Comparare in termini di cicli di clock la durata dell’esecuzione di IADD su MIC-1, MIC-2 e MIC-3.
+Considerando che il tempo di ciclo di MIC1 e MIC2 è 3 volte quello di MIC3 si hanno i seguenti valori
+MIC1:3 iadd +1 MAIN1 cicli = 4*3=12cicli clock in MIC3
+MIC2:3 cicli=3*3=9cicli clock in MIC3
+MIC3:8 cicli clock
+
+5.
+A) Discutere i miglioramenti introdotti in MIC-2 analizzando i benefici portati nell’esecuzione di una
+istruzione (1 istruzione a scelta per miglioramento)
+
+6.
+A) La IFU permette di ridurre la lunghezza media del percorso di un'istruzione, elimina interamente il ciclo principale, dato che alla fine di ogni istruzione esegue un semplice salto all'istruzione successiva. Si risparmia su l'utilizzo della ALU per l'incremento di PC, riduce la lunghezza del percorso ogni volta che viene calcolato un indice o uno spiazzamento a 16bit (assembla il valore a 16bit e lo fornisce direttamente alla ALU come valore a 32bit evitando di assemblarlo all'interno di H). La IFU permette di evitare il salto a main 1 in quanto ad ogni esecuzione di istruzione esegue in automatico la fetch dell’istruzione successiva caricando mbr1 dell’istruzione successiva.Questa unità preleva un flusso di byte dalla memoria tramite una convenzionale porta a 4 byte e li utilizza per alimentare tramite un apposito registro a scorrimento mbr1 e 2: la ifu preleva il byte piu vecchio e lo trasferisce al registro mbr1, se deve invece essere caricato il registro mbr2 preleva i 2 byte più vecchi.
+
+
+
+B) Illustrare come cambiano i valori dei registri PC e IMAR in corrispondenza delle transizioni nell’automa a stati finiti che descrive il comportamento di IFU.
+Prelievo di una parola IMAR=IMAR+1
+MBR1:PC=PC+1
+MBR2:PC=PC+2
+C) Descrivere il miglioramento introdotto da IFU comparando la sequenza di microistruzioni di MIC1 e MIC2 che realizzano l’istruzione IJVM BIPUSH
+MIC1: 3 cicli + 1 Main1
+MIC2: 2 cicli 
+IFU gestisce autonomamente la lettura dell’operando e la lettura del successivo codice operativo; inoltre, permette di eliminare l’istruzione Main1 per saltare alla sequenza di microistruzioni MAL che realizzano la semantica operazione della successiva istruzione IJVM.
+
+6.
+MAR=LV+MBR1U; rd
+1.B=LV A=MBR1U
+2.C=B+A
+3.MAR=C;rd
+4.MDR=mem[MAR]
+
+H=MBR1
+2.B=MBR1
+3.C=B
+4.H=C
+
+MDR=MDR+H;wr;goto(MBR1)
+5.B=H A=MDR
+6.C=A+B
+7.MDR=C;wr
+8.mem[MAR]=MDR;goto MBR1
+
+4.7a)
+L'architettura mic 4 è composta da 7 unità indipendenti che lavorano in pipeline: la prima unità è la IFU, la quale gestisce il PC ed alimenta una nuova componente con il flusso di byte fetched dalla memoria: l'unità di decodifica, questa unità gestisce una rom indicizzata con i codici delle istruzioi ijvm. Ciascuna riga contiene due parti: la lunghezza dell'istruzione ijvm corrispondente ed un codice relativo ad un'altra ROM: la rom delle micro-operazoni.
+Questa rom è contenuta all'interno dell'unità successiva: l'unità di accodamento, all'interno sono presenti due tabelle: una in rom contentente le micro-operazioni che formano il microprogramma ed una in ram che si occupa di accodarle in attesa di esecuzione.
+Dopodichè le informazioni vengo trasmesse a 4 registri mir che abilitano i campi delle micro operazioni, ognuno di questi registri controlla una parte differente del percorso dati.
+5.1a)
+In una architettura scalare del tipo dichiarato nell'esempio le possibili dipendenze sono 3:
+RAW(Read After Write):quando si cerca di leggere un registro ancora aperto in scrittura da un'istruzione precedente non ancora terminata
+ciclo n:   R0=R1+R2
+ciclo n+1: R4=R3+R0
+WAR(Write After Read):quando si cerca di scrivere in un registro ancora aperto in lettura da un'istruzione precedente non ancora terminata
+ciclo n:   R0=R1+R2
+ciclo n+1: R2=R3+R4
+WAR(Write After Write):quando si cerca di scrivere in un registro ancora aperto in scrittura da un'istruzione precedente non ancora terminata
+ciclo n:   R0=R1+R2
+ciclo n+1: R0=R3+R4
+
+5.1b)
+Tramite la rinomina dei registri è possibile risolvere dipendenze di tipo WAR:
+ciclo n:   R0=R1+R2
+ciclo n+1: S1=R3+R4
+e di tipo WAW:
+ciclo n:   R0=R1+R2
+ciclo n+1: S1=R3+R4
+
+5.2a)
+La tecnica di predizione statica dei salti consiste in una precompilazione del codice per fare una previsione delle diramazioni (ad es. se ad un certo punto il compilatore legge for(i=0;i<n;i++) sa che effettuerà n salti all'indietro).
+In linea di massima, una tecnica d previsione statica euristica esegue quasi sempre i salti indietro mentre non esegue quelli in avanti.
+
+5.2b)
+La Tecnica di predizione dinamica consiste nell'eseguire o meno salti in base al comportamento precedente; ci sono due tipi di predizione dinamica: predizione dinamica ad un bit in cui viene aggiunto un bit per indicare se effettua o meno il salto che viene settato in base al comportamento precedente, se poi la previsione si dimostra errata si effettua lo squashing (esecuzione di tutte le istruzioni prima del salto) e viene cambiato il valore del bit di salto. Il secondo tipo di predizione dinamica è a due bit e funziona allo stesso modo, solo che vengono inseriti degli stadi intermedi per predire con maggiore precisione il salto o meno:00->01->11<-10<-00.    ->salto    <-no salto
+
+5.3a)
+L'esecuzione speculativa è l'operazione di ottimizzazione della pipeline utile per eseguire frammenti di codice il cui risultato può essere utile solo in un secondo momento, 
+ad esempio per eseguire entrambi i rami di un operazione di tipo if prima di sapere quale risultato sarà utile (ovvero prima di calcolare la condizione principale dell'if).
+
+5.3b)
+if(condizione){R0=R0+R1}
+	else{R2=R2+R1}
+
+
+6.4b)
+La tecnica di write back con write allocation consiste nel portare in cache il blocco solo se avviene un fallimento in fase di scrittura.
+Conviene utilizzare questa tecnica al posto di write through nel caso di scritture multiple in sequenza.
+
+
+7.1a)
+L'istruzione istore varnum adotta un indirizzamento di tipo indicizzato in quanto si utilizza un indice (varnum) per scorrere l'area delle variabili ed inserire il dato desiderato.
+L'istruzione IOR utilizza invece un tipo di indirizzamento basato sullo stack: gli operandi sono impiliciti i  quanto l'istruzione opera con i dati presenti sullo stack.
+L'istruzione bipush invece ha un indirizzamento di tipo immediato: il byte del dato è contenuto all'interno dell'istruzione 
+
+7.1b)
+Il formato delle istruzioni ijvm è a lunghezza variabile a seconda del tipo di istruzione desiderata:
+DUP			1 byte
+BIPUSH byte		2 byte
+IINC varnum const	3 byte
+
+7.1c)
+I codici operativi delle istruzioni ijvm sono a lunghezza fissa di 1 byte, fatta però eccezione per l'attributo WIDE che ne amplia la lunghezza complessiva rendendo di fatto il codice espandibile.
+
+
+7.3a)
+I/O programmato con attesa attiva:
+Questo sistema è gestito tramite un registro di controllo a in cui un bit (il settimo) indica se il buffer è pronto a ricevere un nuovo carattere:è posto a 1 quando si inserisce un carattere ed azzerato automaticamente quando il buffer viene letto.
+Durante questo processo, il processore rimane attivamente impegnato, in attesa che l'operazione di I/O sia completata.Questo schema è abbastanza semplice, ma può portare ad un utilizzo inefficiente del processore, poiché deve attendere attivamente il completamento dell'I/O senza poter svolgere altre attività.
+
+Vantaggi:
+Semplice da implementare e gestito direttamente dal processore.
+
+Svantaggi:
+Utilizzo inefficiente del processore durante l'attesa attiva comportando un potenziale spreco di risorse, inoltre, il meccanismo del busy waiting si complica se il
+programma deve controllare molteplici eventi di I/O (es.
+attesa di input da tastiera o da mouse) 
+
+
+I/O gestito tramite interrupt:
+In questo caso invece, la cpu può eseguire altre attività in attesa che l'I/O sia terminato (caso del lancio di più operazioni per ciclo di clock), quando la periferica termina l'operazione manda un interrupt(un bit all'interno del buffer chiamato"interrupt enabled") che interrompe le attività della cpu, la quale gestisce tramite una procedura di gestione degli interrupt (interrupt handler).
+
+Vantaggi:
+Maggiore efficienza della cpu in quanto non rimane in attesa e può quindi eseguire altre attività in attesa dell'I/O, inoltre, grazie agli interrupt si ha una migliore gestione delle priorità dei processi attivi nella cpu.
+
+Svantaggi:
+La gestione degli interrupt aggiunge complessità al sistema, richiedendo attenzione alla gestione degli stati e alle priorità delle interruzioni.
+
+
+I/O con DMA (Direct Memory Access)
+Questo meccanismo implementa nel percorso dati un controller più sofisticato in grado di accedere alla memoria a cui la cpu può "delegare" una sequenza di operazioni di I/O indicandone la tipologia.Questo schema riduce il carico sul processore, consentendogli di eseguire altre attività mentre avviene l'I/O.
+
+Vantaggi:
+Riduzione del carico sul processore generato dalle interrupt aumentandone così l'efficienza.
+
+Svantaggi:
+Con questo schema si ha un percorso dati più complesso e la presenza del dma può portare al fenomeno del "cycle stealing": dato che le interrupt hanno priorità sugli altri processi, se il dma si trova ad dover gestire un interrupt potrebbe rubare dei cicli di clock al processore poichè in questo caso appunto il DMA avrebbe una priorità maggiore sul processore. 
+
+
+7.4a)
+INC indirizzamento immediato per #A ed indiretto x operando e destinazione 										(mem[R1] = mem[R1] + A) 
+MULT è un indirizzamento di registro				(R1 = R2 + R3)
+LOAD è un indirizzamento diretto				(R1 = mem[0xABCD1234])
+COPYFROMSTACK è un indirizzamento di tipo indicizzato		(R1 = mem[SP+A])
+
+7.4e)
+In un'architettura di tipo load/store le uniche istruzioni in cui si accede alla memoria sono istruzioni di load/store: un operando indica un registro, l'altro l'indirizzo di memoria a cui si fa riferimento per il trasferimento dei dati
+ADDM non è presente in una architettura di tipo load/store in quanto l'esecuzione:
+mem[R1] = R2 + R3 
+non può essere eseguita da questo tipo di architettura, le operazioni aritmetiche non dovrebbero coinvolgere direttamente la memoria ma i registri.
+
+7.5a)
+Una trap si può vedere come una eccezione (o un errore) che interrompe un programma in determinate situazioni che portano errore(divisione per zero, overflow ecc.) oppure nel caso di system calls da codice utente. 
+In una ISA una delle caratteristiche principali è proprio la definizione dei diversi livelli di esecuzione:
+kernel mode:il programma ha libero accesso a tutte le istruzioni disponibili del linguaggio macchina
+user mode: le istruzioni che agiscono direttamente con le risorse sono proibite (se si prova ad eseguirle viene sollevata una eccezione o una trap).
+
+7.5b) 
+Una trap gestisce le anomalie del programma stampando un errore, terminando il programma che ha generato l'anomalia oppure generando un eccezione.
+Un'interrupt invece gestisce i segnali mandati da un dispositivo di I/O al termine di un'operazione. Quando la cpu riceve un segnale di interrupt smette di eseguire i altri processi, salva i registri sullo stack ed identifica il dispositivo che ha generato l'interrupt (tramite polling o un interrupt vettorizzato) dopodichè, in base al tipo di dispositivo che ha generato l'interrupt, gestisce in maniera specifica l'interrupt.
+Una volta terminata la gestione ripristina i registri precedentemente salvati ed esegue l'istruzione di "return from interrupt" che permette di ripristinare i registri pc e psw del programma interrotto.
+
+7.5c)
+La Trap si verifica quando la MMU riscontra l’assenza della pagina in memoria centrale. La Trap attiva il codice
+per gestire il recupero della pagina dalla memoria secondaria e l’eventuale swap. L’interrupt si verifica
+quando il DMA notifica la CPU che tutta la pagina è stata copiata dalla memoria secondaria nella memoria centrale.
+
+7.6)
+ADD R1,R2,R3 indirizzamento di registro
+MOV #A(R1), #0 indirizzamento immediato di #0 ed indicizzato di #A ed R1
+ADD R2, (R1), R3 indirizzamento di registro per r2 ed r3 ed indiretto per r1
+MOV R1, (#0x324551) indirizzamento diretto per (#0x324551) e di registro per r1
+
+7.7)
+L'istruzione sub non può appartenere al linguaggio macchina di una architettura di tipo load/store poiché coinvolge direttamente la memoria in una operazione aritmetica e ciò in questo tipo di architettura non è consentito.
+
+7.8)
+ADD R1,R2,R3 indirizzamento di registro per operandi e destinazione
+MOV #A(R1), #0 indirizzamento immediato per 0 ed indicizzato per R1
+ADD R1, (R3) indirizzamento di registro per R1 ed indiretto per r3
+LOAD R1, (#0x324551) indirizzamento di registro per r1 e diretto per #0x324551
+STORE #A, (SP) indirizzamento basato sullo stack ed indiretto per sp
+
+
+7.9)
+leggicarattere:
+IN
+IFEQ buffervuoto
+istore c
+goto letto
+buffervuoto:
+pop
+goto leggicarattere
+
+letto:
+...
+
+L'esecuzione è impegnata (busy) ad eseguire il seguente ciclo, in attesa (waiting) di leggere un carattere
+
+
+8.1)
+a)Di quante pagine logiche è composta l’immagine di un processo? 
+
+(indirizzi al byte)/(dim.mem.vir)
+2*32 / 2*12 = 2*20 
+
+Di quanti byte è composta la memoria?
+(dim.mem.vir) x (n.frame)
+2*12 x 2*4 = 2*16 
+
+8.1c)
+Le locazioni di memoria sono un insieme di indirizzi delle celle di memoria (dipende dalla dimensione della ram), lo spazio degli indirizzi(detto amche immagine) invece rappresenta l'insieme di posizioni posizioni indirizzabili da un programma tramite le modalità di indirizzamento offerte dall'isa.
+ 
+8.2a)
+L'immagine in memoria di ciascun processo è divisa in blocchi di uguale dimensione chiamati pagine(logiche), la memoria fisica è suddivisa in frame (o pagine fisiche) della stessa dimensione delle pagine logiche. Per ogni processo è mantenuta una tabella delle pagine che indica per ciascuna pagina dello spazio di indirizzi se si trova o meno in RAM e se si trova in memoria in quale frame è allocata.
+
+8.2b)
+la tabella delle pagine deve avere tante entry quante sono le pagine virtuali in cui è divisa l’immagine di un processo
+(dim.immagine) / (dim.pagine)
+2*30 / 2*12 = 2*18
+sono quindi i 18 bit più significativi (i primi 18 dA sinistra)
+
+
+
+L'indirizzamento diretto è un tipo di indirizzamento in cui nel suo codice operativo è presente l'indirizzo in cui andrà memorizzato:
+LOAD R1 0xABC  R1=mem[0xABC]
+L'indirizzamento immediato invece, non ha bisogno di accedere alla memoria in quanto il dato viene codificato con pochi bit, utile per definire numeri interi esprimibili con combinazioni brevi di codice binario:
+BIPUSH 10
+L'indirizzamento di registro è quando L'indirizzo di una cella di memoria è contenuta all'interno di un registro, esplicitato come parsmetro della funzione:
+ADD R1, R2 R3   R1=R2+R3
+
+
+
+Una architettura di tipo load/store è un tipo di architettura in cui le uncihe operazione che possono utilizzare i dati in memoria sono operazioni di load, store e move:
+Load porta un dato dalla memoria ad un registro;
+store salva il risultato di un registro in memoria;
+move sposta un dato da un registro ad un altro, rare volte si hanno operazioni di move che coinvolgono due celle di memoria.
