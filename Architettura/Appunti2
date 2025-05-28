@@ -1,0 +1,440 @@
+
+https://youtu.be/I7aNNHX7Ohc
+
+.method abs (n)
+iload n
+iflt cambiasegno
+iload n
+ireturn
+cambiasegno:
+bipush 0
+iload n
+isub
+ireturn
+.end-method
+
+carica N, iflt controlla se n<0, se entra in CAMBIASEGNO 0-n cambia il bit di segno a 0 rendendo il numero positivo.
+
+  
+.constant 
+OBJREF 0x678
+K 23
+-end-constant
+
+.main
+
+.var
+x
+y
+.end-var
+
+iload y
+bipush 12
+istore
+iload x
+bipush 10
+ldc_w K
+isub
+istore
+ldc_w OBJREF
+iload x
+invokevirtual abs
+bipush 2
+iadd
+iload y
+isub
+istore y
+.end-main
+
+
+
+
+
+.constant 
+OBJREF 0x678
+K 23
+.end-constant
+
+.main
+
+.var
+x
+y
+.end-var
+bipush -3
+ldc_w K
+dup
+iadd
+isub
+istore x
+bipush 23
+ldc_w OBJREF
+bipush 2
+iload x
+bipush 1
+iadd
+invokevirtual f
+ldc_w K
+isub
+istore y
+.end-main
+
+
+
+.method f (x,y)
+.var
+z
+.end-var
+iload x
+iload y
+iadd
+bipush 2
+isub
+istore z
+iload z 
+dup 
+iadd
+ireturn
+.end-method
+
+
+.constant
+OBJREF 0x40
+N 4
+.end-constant
+
+.main
+.var
+x
+y
+.end-var
+ldc_w N
+bipush 2
+iadd
+istore y
+ldc_w OBJREF
+iload y
+bipush 1
+isub
+iload y
+invokevirtual f
+bipush 10
+iadd
+istore x
+.end-main
+
+Il codice del metodo chiamante (o del main) carica sullo stack una costante che ha un ruolo di“placeholder” per il primo elemento del record di attivazione (destinato a memorizzare il puntatore alle celle dove sono salvati i valori di PC e di LV).
+Il metodo chiamante carica sullo stack i parametri attuali, a seguito della chiamata a metodo tramite l'istruzione INVOKEVIRTUAL viene allocato dello spazio sullo stack per creare una zona "locale" in cui verrà eseguito il metodo.
+PC viene aggiornato per puntare alla prima istruzione della procedura chiamata.
+Tramite l'struzione IRETURN i valori dei registri LV SP e PC vengono settati nuovamente ai valori prima della chiamata al metodo.
+
+
+Il record della chiamata al metodo f è diviso in:
+-puntatore alla locazione in cui è memorizzato il pc quando termina il metodo
+-i valori dei parametri dell'invocazione 
+-lo spazio per memorizzare la variabile locale z
+-indirizzo di pc di ritorno
+-indirizzo di lv del chiamante
+
+
+		TUTTE LE CHIAMATE A METODO SONO STRUTTURATE IN QUESTO MODO
+
+metodo mcd(16,24)
+
+		LV chiamante
+		PC chiamante(*)
+	    	y		  24
+	    	x		  16
+		punt. collegam.   (*)
+
+
+int max(int p1, int p2)
+  if(p1-p2<0)
+     return p2
+   else return p1
+
+
+#define OBJREF 0x40
+#define K 10
+
+int main()
+int n=13
+int m=10-n
+n=max(n+K*2, n-5)
+m++
+
+0x84 0x02 0x01 iinc m 1
+0x15 0x02      iload p2
+0x9B 0x00 0x06 iflt max p2
+0xAC 	       ireturn  
+
+
+a)
+
+			    LV chiamante			
+(*)			    pc del chiamante (indirizzo prossima istruzione [BIPUSH -1])
+parametro attuale x	    -84
+puntatore di collegamento   contiene l'indirizzo della cella (*)
+
+
+
+b) 
+iload x 0x15 0x01
+iflt neg 0x9B 0x00 0x06
+bipush -1 0x10 0xFF
+ireturn 0xAC5
+
+Nell'architettura mic-2 il bus A è ora disponibile per tutti i registri, in questo modo non è più vincolato il registro H per operazioni della ALU.
+Viene introdotta la IFU (Instruction Fetch Unit), questa unità da e riceve informazioni dalla memoria centrale, aumenta PC ed alimenta due registri: MBR ed MBR2(per operazioni di lunghezza maggiore)di bytecode fetched dalla memoria centrale; questi registri ricevono le informazioni fetchate dalla memoria tramite la IFU e vengono caricate tramite un automa che shifta le informazioni tenendo il flusso di dati in entratat costante. Inoltre, grazie all'introduzione della IFU e l'abilitazione dei registri sul bus A i cicli richiesti per ogni istruzione diminuiscono poichè non è più necessario incrementare PC e richiamare al ciclo principale Main1, inoltre grazie al bus A non è più necessario spostare i dati in H per operazioni di ALU rendendo il registro H un registro come gli altri.
+
+
+Nell'architettura mic 2 il formato delle microistruzioni cambia: il campo fetch non è più necessario poichè viene svolto autonomamente dalla ALU, il bus B ora è collegato ad 8 registri quindi sono necessari 3 bit per la codifica (1 in meno rispetto a mic 1), infine viene introdotto un nuovo campo per l'abilitazione al bus A.
+
+
+
+L'evoluzione dell'architettura MIC-3 rispetto a quella precedente consiste nell'implementazione di tre registri intermedi posti sui bus da cui prendono il nome (Latch A,B,C).
+Grazie a questi registri è possibile spezzare il percorso dati in tre parti indipendenti che lavorano in autonomia implementando così il concetto di pipeline: per eseguire ogni microistruzione occorre un giro completo del percorso dati che occupa tre cicli di clock:
+1° per l'abilitazione dei registri ai latch A e B
+2° per il caricamento delle operazione di ALU e shifting sul Latch C
+3° per aggiornare i registri dei risultati contenuti in C
+In questo modo è posssibile, tramite la pipeline, eseguire simultaneamente microistruzioni differenti, spezzandi il percorso dati e diminuendo la durata del ciclo di clock (1/3 rispetto a quello per mic 2).
+
+
+iload 1
+A=LV  B=MBR1U
+C= A+B
+MAR=C;rd
+
+iload 2
+A=LV  B=1
+C=A+B
+MAR=SP=C
+
+iload3
+A=MDR
+C=A
+TOS=MDR;wr(goto MBR1)
+
+
+.label mul2 0x85
+
+mul21 h=tos			//essendo mic 1 devo utilizzare H per operazioni
+mul22 mdr=tos=h+tos		//quindi uso registri di memoria solo per aggiornare la
+mul23 mar=sp;wr;goto Main1	//variabile
+
+
+2*x+3 no mul2: 16+5(Main1)= 21 cicli di mic 1
+
+iload x
+dup 
+iadd
+bipush 3
+iadd
+
+2*x+3 con mul2: 14+4(Main1)= 18 cicli di mic 1
+iload x
+mul2
+bipush 3
+iadd
+
+.label setvar 0x85
+
+setvar1 H=LV
+setvar2 PC=PC+1;fetch		//questo è per fetchare la variabile const
+setvar3 MAR=MBRU+H;rd
+setvar4 PC=PC+1;fetch		//questo per prelevare next opcode
+setvar5 MDR=MBR;wr;goto Main1
+
+y=3 senza setvar: 9+2(Main1)= 11 cicli mic 1
+
+bipush 3
+istore y
+
+y=3 senza setvar: 5+1(Main1)= 5 cicli mic 1
+
+setvar y 3
+
+
+.label inor 0xC1
+
+inor1 MAR=SP=SP-1;rd
+inor2 H=TOS
+inor3 H=MDR or H
+inor4 MDR=TOS= not H
+
+
+mic 1: la codifica per mic 1 utilizza 5+1(Main1) cicli di clock per l'esecuzione di iload
+mic 2: la codifica per mic 2 utilizza 3 cicli di clock per l'esecuzione di iload
+mic 3: la codifica per mic 3 utilizza 8 cicli di clock per esecuzione di iload
+essendo che su mic 3 i cicli di clock sono 1/3 rispetto agli altri:
+mic 1: 6x3= 18 cicli di mic 3
+mic 2: 3x3= 9 cicli di mic 3
+mic 3: 8 cicli 
+
+
+mic 1: la codifica per mic 1 utilizza 3+1 cicli di clock per eseguire iadd
+mic 2: la codifica per mic 2 utilizza 3 cicli di clock per eseguire iadd
+mic 3: la codifica per mic 3 utilizza 8 cicli di clock per eseguire iadd
+essendo che su mic 3 i cicli di clock sono 1/3 rispetto agli altri:
+mic 1: 4x3= 12 cicli di mic 3
+mic 2: 3x3= 9 cicli di mic 3
+mic 3: 8 cicli 
+
+
+Nell'architettura mic 4 l'evoluzione architetturale consiste nella pipeline a sette stadi:
+Vengono aggiunte 2 nuove componenti: l'unità di decodifica ed una rom per le microoperazioni.
+L'unità di decodifica riceve le istruzoni dalla IFU che le decodifica in micro operazioni come quelle per mic 3, dopodichè vengono accodate nella microoperation ROM (o queueing unit) che si occupa di accodare le operazioni nell'ordine in cui verranno lanciate, dopodichè, gli ultimi 4 stadi che prendono il nome di MIR1,2,3, e 4 si occupano di instradare i registri alla alu (MIR1 abilita bus A e B), eseguire operazioni di ALU e shifter (MIR2 abilita ALU), mandare risultati dal bus c ai registri(MIR3 abilita bus C) ed infine mandare informazioni alla memoria (MIR4 abilita Mem).
+
+
+Rispetto alle microistruzioni di mic 2 quelle in mic 4 non hanno i campi nextaddress e JAM e vengono rimpiazzati dai bit final e goto
+
+
+
+In una architettura superscalare con istruzioni a tre operandi del tipo Rdest = Rsource1 OP Rsource2 ci sono tre tipi di dipendenze:
+Dipendenza RAW(Read After Write):
+Lettura come operando di un registro ancora aperto come destinazione da una istruzione precedente.
+n	R0=R1+R2
+n+1	R3=R0+R4
+Dipendenza WAR(Write After Read):
+Scrittura in un registro di destinazione utilizzato come operando da una istruzione precedente non ancora ritirata. 
+n	R0=R1+R2
+n+1	R2=R3+R4
+Dipendenza WAW(Write After Write):
+Scrittura in un registro destinazione utilizzato come destinazione anche da una istruzione precedente.
+n	R0=R1+R2
+n+1	R0=R3+R4
+
+
+Alcune di queste dipendenze possono essere rsolte tramite la tecnicnca di rinomina dei registri, la quale utilizza registri segreti come destinazione.Vengono così risolte dipendenze di tipo WAR e WAW:
+WAR
+n	R0=R1+R2
+n+1	R2=R3+R4
+WAR(risolto)
+n	R0=R1+R2
+n+1	S1=R3+R4
+
+WAW
+n	R0=R1+R2
+n+1	R0=R3+R4
+WAW(risolto)
+n	R0=R1+R2
+n+1	S1=R3+R4
+
+
+La tecnica di previsione statica dei salti condizionati consiste in una precompilazione del codice per analizzare eventuali diramazioni condizionali e poter così predire i salti.Se per esempio il compilatore legge for(i=0;i<5;i++) saprà che dovranno essere effettuati 5 salti all'indietro.In linea di massima, una tencica di previsione statica con euristica esegue salti all'indietro e non quelli in avanti.
+
+
+La tecnica di previsione dinamica dei salti condizionati consiste nell'eseguire o meno i salti condizionali in base al comportamento precedente: nella tecnica di previsione dinamica ad un bit si utilizza una tabella per tenere traccia dei comportamenti avuti in precedenza: 1 se è stato effettuato il salto, 0 altrimenti.
+Quando poi si incontra la stessa istruzione di salto si utilizza il comportamento avuto nel salto precedente e viene poi salvato in tabella l'effettivo comportamento; se il comportamento avuto non era quello atteso si effettua lo "squashing" (esecuzione di tutte le operazioni prima del salto). La prima volta che viene incontrato un salto si esegue una metodologia euristica: salti indietro si, salti avanti no. 
+La tecncica di predizione dinamica a due bit invece consiste come la prima nell'esecuzione di un salto o meno in base ai comportamenti avuti in precedenza, ma vengono posti due bit per poter avere degli stadi intermedi e quindi doppia precisione (per poter diminuire gli stalli in esecuzione dovuti ad errori nella predizione).
+
+
+L'esecuzione speculativa consiste nell'eseguzione di codice o parti di esso che saranno utili solo in un secondo momento, come ad esempio nel caso di un operazione if esegue l'operazione prima di verificare la condizione iniziale.
+
+if (x>o)
+	y=1/x
+
+il poison bit è un bit che viene posto durante l'esecuzione speculativa quando si cerca di eseguire speculativamente un blocco che genera un'eccezione (ad esempio se nel codice sopra x=0), invece di lanciare il messaggio di errore viene posto il poison bit ad 1, la segnalazione di errore avviene solo quando si cerca di eseguire la parte che ha generato l'eccezione., si dieve decidere se aggiornare il dat
+
+
+In una architettura dotata di cache, durante una operazione di scrittura, si deve decidere se salvare il dato in memoria o aggiornarlo solo in cache.
+La tecnica del write through consiste, al momento della scrittura, nell'aggiornare il dato sia in cache che in memoria. Questa tecnica è semplice da gestire ed ha una maggiore concsistenza dei dati più recenti, a discapito però di un possibile spreco di risorse del sistema a causa dell'elevato overhead complessivo.
+La tecnica del write back, invece, consiste nell'aggiornare il dato solo in cache, impostare un bit chiamato "dirty bit" ad uno, ed aggiornare la memoria solo nel momento in cui il blocco in cache viene rimpiazzato. Questa tecnica favorisce un utilizzo più funzionale a discapito di una possibile incosistenza temporale: dato che i blocchi vengono scritti in memoria solo quando rimpiazzati, la memoria potrebbe non riflettere lo stato più recente.
+
+
+Se il blocco non è presente in memoria si deve decidere se allocarlo o meno in cache, la tecnica di write allocation porta il blocco in memoria al momento della scrittura, soluzione vantaggiosa se ci sono ripetute scrittura di elementi dello stesso blocco
+
+
+
+La collisione tra blocchi si verifica quando si vuole caricare un blocco su una linea occupata da un altro blocco, nell'esempio succede nell'ultimo indirizzo, in quanto il tag fino a quel momento era 0x2F sulla riga 4, ora invece si cerca di immettere nella riga 4 un blocco con tag 0x17.
+
+
+1: read miss, il blocco viene inserito in cache
+2:hit, il blocco viene scritto e aggiornato in cache, il dirty bit impostato ad uno
+3:read miss e collisione, 0x2F47A viene aggiornato in memoria, dirty bit resettato a 0, il blocco 0x17433 viene inserito in cache.
+
+
+
+L'istruzione ISTORE varnum utilizza un indirizzamento indicizzato rispetto a LV implicito 
+L'istruzione IOR utilizza un indirizzamento basato sullo stack
+L'istruzione BIPUSH byte utilizza un indirizzamento di tipo immediato
+
+I formati delle istruzoni ijvm hanno lunghezza variabile a seconda del tipo di istruzione ed indirizzamento adottato per quell'istruzione:
+IADD: 1 byte
+ILOAD varnum: 2 byte
+IINC X 1: 3 byte
+
+
+I codici operativi delle istruzioni ijvm hanno lunghezza fissa di 1 byte, tuttavia il prefisso WIDE offre la possibilità di espandere il codice operativo su determinate operazione rendendo di fatto il codice espandibile. 
+
+2 x * y + z 8 - / 3 *
+
+
+
+I/O programmato con attesa attiva:
+Questo sistema è gestito da un registro di controllo (buffer) in cui un bit(il settimo) viene utilizzato per visualizzare lo stato del buffer: impostato ad 1 quando viene caricato un carattere ed azzerato quando il carattere viene letto. 
+Durante questo processo il processore rimane attivamente impegnato (da qui "busy waiting" o "attesa attiva") portando ad un possibile spreco di risorso del dispositivo: il processore concentra il suo lavoro sull'attesa dei caratteri da tastiera, questo sistema rimane efficente e facile da implementare, a causa del potenziale spreco di risorse però è adottato solo da macchine composte solo da un terminale ed una tastiera.
+
+
+I/O guidato dalle interrupt:
+Questo sistema punta a non sprecare le risorse del sistema (caso di lanci multipli di istruzioni per ciclo di clock) poichè il processore è libero di eseguire processi, quando la periferica termina l'operazione viene mandata una interrupt: all'interno del buffer dati è presente un bit che abilita il segnale di interrupt.Questo segnale viene gestito da un interrupt handler che, salvato lo stato di pc e messi in pausa i processi in esecuzione dalla cpu, si occupa di caricare il dato e ripristinare il precedente lavoro della cpu.
+Questo sistema è ottimale dal punto di vista dell'utilizzo funzionale delle risorse, tuttavia aggiunge complessità in quanto si occupa di visionare lo stato e la priorità delle interrupt.
+
+
+I/O con DMA: 
+Questo sistema opera a diminuire il peso delle interrupt sul processore, per farlo viene implementato un controller "intelligente" in grado di accedere autonomamente alla memoria.
+Il processore puo delegare alcune operazioni di I/O indicandone la tipologia, questo riduce il carico complessivo del processore causato dalle interrupt.
+Questo sistema riduce di molto il peso del lavoro sulla cpu, tuttavia aumentando il numero di componenti aumenta la complessità architetturale. Inoltre a causa dell'implementazione della dma è possibile che avvenga il fenomeno del cycle stealing: a causa della priorità data dalle interrupt, è possibile che la dma "rubi" dei cicli di clock al processore in quanto i processi attivi sul dma hanno prorità maggiore rispetto alle altre componenti.
+
+
+INC (R1), #A 
+indirizzamento indiretto per R1 e immediato per A
+MULT R1, R2, R3
+indirizzamento a registro per tutti gli operatori
+LOAD R1, (#0xABCD1234)
+indirizzamento a registro per dest e diretto per l'operando
+COPYFROMSTACK R1, #A ()
+indirizzamento indicizzato esteso (base-indice)
+ADD R1, R2, R3
+indirizzamento a registro per destinazione e operatori
+MOV #A(R1), #0
+indirizzamento base indice per la destinazione ed immediato per l'operando
+ADD R2, (R1), R3 
+indirizzamento a registro per R2 ed R3, indiretto a registro per R1
+MOV R1, (#0x324551)
+indirizzamento a registro per la destinazione, diretto per l'operando
+LOAD R1, #3(R2) 
+indirizzamento a registro per R1 indicizzato per l'operatore
+ADD R3, R1, #4(R2)
+indirizzamento a registro per R1 ed R3 e indicizzato per #4(R2)
+ADD R4, R1, #5
+ind a registro per r4 r1 e immediato per 5
+SUB #3(R2), R3, R4
+indirizzamento indicizzato per la destinazione e a registro per gli operatori.
+
+Una memoria virtuale ha pagine logiche di 4Kbyte. Le immagini dei processi hanno 2^32 indirizzi al byte. La memoria fisica è composta da 16 frame:
+Di quante pagine logiche è composta l’immagine di un processo? 
+
+2^32 / 2^12(4Kby)= 2^20 pagine (codificate con 20 bit)
+
+Di quanti byte è composta la memoria?
+
+2^12 x 2^4(16 frame) = 2^16 byte (locazioni indirizzabili con 16 bit)
+
+es 8.1b)
+per risolvere esercizi di questo tipo bisogna controllare se le corrispondenze sono presenti nella tabella es. 0x00012 → 0xF
+se combaciano e hanno offset uguale (es. 0x00012ABC → 0xFABC) la traduzione si può dire corretta, altrimenti, dare la traduzione giusta (mettere offset o numero pagina corretti)
+
+
+lo spazio degli indirizzi, anche chiamato immagine di un processo, sono tutte le posizioni indirizzabili da un programma tramite le modalità di indirizzamento offerte (dipende da ISA).
+Le locazioni di memoria invece sono l'insieme degli indirizzi delle celle di memoria (dipende da dimensione RAM). 
+La MMU o Memory Management Unit è l'unità che si occupa di aggiornare le pagine caricate e trsformare gli indirizzi logici/virtuali in indirizzi fisici leggibili dalla ram.
+Quando avviene una "page fault" la mmu si occupa di rimpiazzare una pagina presente in RAM con quella che ha lanciato la trap.
+
+
+La tabella delle pagine ha il compito di memorizzare informazioni necessarie a realizzare l'associazione tra gli indirizzi virtuali (memoria virtuale) e le locazioni fisiche (RAM).
+Ogni processo ha la propria tabella delle pagine, la quale indica per ciascuna pagina dell'immagine del processo se si trova o meno in ram e se si trova in memoria in quale frame è allocata. Questi dati saranno poi utili alla MMU per tradurre gli indirizzi se la pagina è in memoria o altrimenti causare una page fault se è necessario portare la pagina in memoria.
+
+numero entry=numero di pagine es: 8 pagine avrà entry=3 (2^3=8)= 3 bit più significativi dell'indirizzo
+  
+
