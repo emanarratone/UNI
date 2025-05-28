@@ -1,20 +1,28 @@
-Algoritmi1
-Questa directory contiene materiali, esercizi e implementazioni relativi al corso di Algoritmi 1. La maggior parte dei file sono scritti in linguaggio C.
+from pathlib import Path
 
-Struttura
-/ADT — Implementazioni di Abstract Data Types (tipi di dato astratti) come liste, stack, code, alberi, ecc.
-Altri file e cartelle possono contenere esercizi, esempi svolti a lezione e soluzioni di compiti.
-Come compilare ed eseguire
-Per compilare i programmi presenti in questa cartella, è possibile usare make (se disponibile un Makefile) o compilare manualmente con gcc. Ad esempio:
+# Contenuto del README per la directory Algoritmi1
+algoritmi1_readme_content = """\
+# Algoritmi1
 
-sh
+Questa directory contiene materiali, esercizi e implementazioni relativi al corso di **Algoritmi 1**. La maggior parte dei file è scritta in linguaggio **C**.
+
+## Struttura
+
+- `/ADT` — Implementazioni di Abstract Data Types (tipi di dato astratti) come:
+  - Liste
+  - Stack
+  - Code
+  - Alberi
+
+Altre cartelle e file possono contenere:
+- Esercizi
+- Esempi svolti a lezione
+- Soluzioni di compiti
+
+## Come compilare ed eseguire
+
+### Con `make`
+Se è presente un `Makefile`, puoi usare:
+
+```sh
 make clean all
-oppure
-
-sh
-gcc -o nome_programma nome_file.c
-Dopo ogni compilazione (ad esempio dopo make clean all), è consigliato eseguire:
-
-sh
-valgrind --tool=memcheck --leak-check=full ./nomefile
-Sostituisci nomefile con il nome dell’eseguibile generato, per verificare la presenza di eventuali memory leak o errori di gestione della memoria.
