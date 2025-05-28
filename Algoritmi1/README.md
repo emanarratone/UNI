@@ -1,7 +1,3 @@
-from pathlib import Path
-
-# Contenuto del README per la directory Algoritmi1
-algoritmi1_readme_content = """\
 # Algoritmi1
 
 Questa directory contiene materiali, esercizi e implementazioni relativi al corso di **Algoritmi 1**. La maggior parte dei file è scritta in linguaggio **C**.
