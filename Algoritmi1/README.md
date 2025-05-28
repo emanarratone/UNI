@@ -35,6 +35,6 @@ gcc -o nome_programma nome_file.c
 ### Dopo ogni compilazione  è consigliato eseguire:
 
 ```sh
-sh valgrind --tool=memcheck --leak-check=full ./nomefile
+valgrind --tool=memcheck --leak-check=full ./nomefile
 ```
 Per verificare anche la presenza di **memory leak** o simili (dangling pointer, wild pointer...) che rappresenta il focus principale del corso e di questa directory.
