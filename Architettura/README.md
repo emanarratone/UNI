@@ -1,6 +1,6 @@
 # Architettura
 
-Questa directory è una collezione di appunti, esercizi ed esempi di codice in linguaggio macchina **MAL ed IJVM**, presenti per informazioni o manuali nel libro **Architettura dei calcolatori. Un approccio strutturale** di *Andrew S.Tanenbaum*.
+Questa directory è una collezione di appunti, esercizi ed esempi di codice in linguaggio macchina **MAL ed IJVM**, presenti per informazioni o manuali nel libro "**Architettura dei calcolatori. Un approccio strutturale.**" di *Andrew S.Tanenbaum*.
 
 ## Contenuto
 I file Appunti 1 e Appunti 2 sono file diversi ma **complementari**.
