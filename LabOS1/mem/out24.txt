@@ -1,0 +1,31 @@
+var esterne: 0x58ba75f45014 0x58ba75f45018
+interne al main: 0x7ffcd208cc04 0x7ffcd208cc08
+dati della funzione: parametro, var. automatica, var. statica 
+0x7ffcd208cbdc 0x7ffcd208cbe4 0x58ba75f4501c
+0x7ffcd208cbac 0x7ffcd208cbb4 0x58ba75f4501c
+0x7ffcd208cb7c 0x7ffcd208cb84 0x58ba75f4501c
+0x7ffcd208cb4c 0x7ffcd208cb54 0x58ba75f4501c
+0x7ffcd208cb1c 0x7ffcd208cb24 0x58ba75f4501c
+0x7ffcd208caec 0x7ffcd208caf4 0x58ba75f4501c
+malloc : 0x58ba779d92b0
+malloc : 0x58ba779d96c0
+malloc : 0x58ba779d9ad0
+malloc : 0x58ba779d9ee0
+mmap processo figlio array interi : 0x72866a97e000
+mmap processo figlio array caratteri: 0x72866a944000
+var esterne: 0x58ba75f45014 0x58ba75f45018
+interne al main: 0x7ffcd208cc04 0x7ffcd208cc08
+dati della funzione: parametro, var. automatica, var. statica 
+0x7ffcd208cbdc 0x7ffcd208cbe4 0x58ba75f4501c
+0x7ffcd208cbac 0x7ffcd208cbb4 0x58ba75f4501c
+0x7ffcd208cb7c 0x7ffcd208cb84 0x58ba75f4501c
+0x7ffcd208cb4c 0x7ffcd208cb54 0x58ba75f4501c
+0x7ffcd208cb1c 0x7ffcd208cb24 0x58ba75f4501c
+0x7ffcd208caec 0x7ffcd208caf4 0x58ba75f4501c
+malloc : 0x58ba779d92b0
+malloc : 0x58ba779d96c0
+malloc : 0x58ba779d9ad0
+malloc : 0x58ba779d9ee0
+mmap processo padre array caratteri: 0x72866a97e000
+mmap processo padre array interi : 0x72866a944000
+Dall'array condiviso di interi: 10 e da quello di caratteri: q 

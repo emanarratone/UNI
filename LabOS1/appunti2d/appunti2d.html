@@ -1,0 +1,118 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head><title>Appunti Laboratorio Sistemi Operativi, Parte 2D</title>
+
+
+
+
+
+
+
+  
+  <meta http-equiv="content-type" content="text/html; charset=ISO-8859-1"></head><body><h2>APPUNTI DI SISTEMI OPERATIVI 1 PER LE ESERCITAZIONI IN LABORATORIO</h2><h2>PARTE 2D -&nbsp; POSIX&nbsp; THREADS <br>
+</h2>
+
+La libreria dei POSIX threads - pthreads in breve - è
+disponibile su molte versioni di Unix.<br>
+Il funzionamento dei programmi che utilizzano le funzioni della
+libreria dovrebbe essere lo stesso su versioni diverse di Unix (sarebbe
+questo lo scopo di uno "standard" come POSIX) anche se in realtà
+questo non è completamente vero, a causa delle diverse scelte
+implementative
+e di conseguenza del fatto che una implementazione può
+supportare
+soltanto una parte dello standard.<br>
+<br>
+Un riferimento generale per i Posix Threads è il testo di
+Butenhof, "Programming with POSIX threads" (Addison-Wesley 1997). <b><br>
+<br>
+***************************<br>
+COMPILAZIONE E LINKING<br>
+***************************</b><br>
+Per usare la libreria dei pthreads si include &lt;pthread.h&gt; e
+si passa al comando di <span style="font-weight: bold;">collegamento</span> (o <span style="font-weight: bold;">compilazione</span> e collegamento)
+<span style="font-weight: bold;">l'opzione "-pthread" dopo i file</span>.<br>
+<br>
+<b>*****************************<br>
+CREAZIONE, TERMINAZIONE<br>
+*****************************</b><br>
+<br>
+I pthreads hanno un identificatore di tipo "pthread_t", e degli
+attributi di tipo "pthread_attr_t".<br>
+Entrambi questi tipi sono "opachi" cioè non bisogna fare
+assunzioni su come siano rappresentati; vanno utilizzati soltanto con
+le funzioni apposite, e non mediante assegnazioni.<br>
+<br>
+Gli attributi di un thread comprendono la dimensione della stack e
+attributi usati per lo scheduling.<br>
+<br>
+Con:<br>
+<pre>	int pthread_attr_init(pthread_attr_t *attr);</pre>
+si inizializza, con gli attributi di default, un "contenitore di
+attributi" *attr, da utilizzare in seguito nella funzione di creazione
+di un nuovo thread:<br>
+<br>
+<pre>	int pthread_create(pthread_t *thread, const pthread_attr_t *attr, <br>			   void *(*start_routine)(void*),void *arg);</pre>
+crea un nuovo thread nel processo chiamante.<br>
+L'identificatore del nuovo thread viene messo in "*thread", il thread
+viene creato con gli attibuti "*attr" (si può anche usare NULL
+come secondo argomento, per creare un thread con gli attributi di
+default)
+e va ad eseguire la funzione "*start_routine", a cui viene passato
+l'argomento "arg". <br>
+La funzione da eseguire deve avere un puntatore generico ("void *")
+come unico argomento, e valore restituito dello stesso tipo.<br>
+<br>
+Un thread termina quando termina di eseguire la sua "start_routine"
+oppure quando chiama:<br>
+<pre>	void pthread_exit(void *value_ptr);</pre>
+Un "valore di ritorno" del thread, che nel primo caso è il
+valore di ritorno della "start_routine", nel secondo quello passato a
+pthread_exit, viene reso disponibile al thread che chiama:<br>
+<pre>	int pthread_join(pthread_t thread, void **value_ptr);</pre>
+La chiamata di pthread_join sospende il thread chiamante fino alla
+terminazione del thread specificato.<br>
+Si veda il seguente esempio.<br><pre><br>::::::::::::::<br>t1.c<br>::::::::::::::<br><br>#include &lt;pthread.h&gt;<br>#include &lt;stdio.h&gt;<br><br><br>void *tbody(void *arg)<br>{<br><br>	int j;<br><br>        printf("   Thread due\n");<br>	<br>	*(int *)arg = 10; <br>	<br>	for (j=0;j&lt;1000000000;j++); /* per vedere che chi fa join aspetta */<br><br>        pthread_exit(NULL); /* oppure return(NULL); */<br>}<br><br>int main(int argc, char *argv[])<br>{<br>        int i;<br>        pthread_t t;<br>        void *result;<br><br>        pthread_create(&amp;t, NULL, tbody, (void *) &amp;i);<br>	<br>	/* e' equivalente dichiarare pthread_attr_t tattr; e chiamare<br>	pthread_attr_init(&amp;attr);<br>        pthread_create(&amp;t, &amp;tattr, tbody, &amp;i); <br>        se invece si vogliono usare attributi diversi da<br>	quelli di default, li si modificano tra attr_init e create */<br>	<br>        printf("Thread uno \n");<br><br>        pthread_join(t, &amp;result);<br><br>	if (result == NULL) {<br>		printf("i: %d \n",i);<br>		return 0;<br>	}<br>	else return 1;<br><br>}<br><br>::::::::::::::<br><br></pre><span style="font-weight: bold;">ESERCIZIO 2.13</span>: compilare il programma precedente :-) . Se il primo tentativo non ha successo,
+interpretare quanto si vede scritto e rivedere&nbsp;l'inizio di questo
+capitolo di appunti.<br><br><span style="font-weight: bold;"></span>L'esempio evidenzia che la memoria (la variabile i, in particolare) è condivisa. Alla funzione eseguita dal
+thread viene passato un puntatore alla variabile i, dichiarata nel main.<br>
+<b> Attenzione però: in questo esempio la funzione chiamante attende
+la terminazione del thread prima di terminare, ma, in generale, passare
+ad un thread puntatori a variabili sulla stack può dar luogo a
+errori se non c'è garanzia che la funzione in cui la variabile
+è dichiarata non termini prima del thread.</b><br>
+<br>
+Anche il fatto che le variabili globali siano condivise può dar luogo ad
+errori di programmazione (es. una variabile usata da un thread T1 per
+uno scopo e contemporaneamente da un altro T2 per un altro scopo). Per
+questo motivo esiste la
+possibilità di allocare dati "privati" di un thread ma "globali"
+nel senso che sono utilizzabili da più funzioni ("thread
+specific data"), non trattati in questi appunti.<br>
+<br>
+La condivisione di memoria può dar luogo alle cosiddette <span style="font-weight: bold;">corse critiche </span>di cui si tratta più avanti.<br>
+<br>Il
+seguente esempio (simile a&nbsp;par.c per i processi) può essere usato
+per verificare che in Linux, su una macchina con più CPU, thread diversi vengono fatti avanzare assegnando ad essi le CPU. <br>Nel
+programma viene creato un numero di thread passato come argomento, ogni
+thread consuma CPU scrivendo ogni tanto una stringa, nella quale i vari
+thread sono identificati da un lettera "a" "b", etc.<br><br><span style="font-weight: bold;">ESERCIZIO 2.14.</span> Verificare che la macchina sia "scarica", cioè che sia basso
+(vicino a 0) il "carico" medio (load average) recente. Il carico è il
+numero di thread pronti o in esecuzione e la media di tale valore negli ultimi 1, 5 e
+15 minuti viene visualizzata dai comandi "w" e "top".<br>Lasciando girare "top"
+su una finestra, su un'altra chiamare l'eseguibile con
+"time"&nbsp;passando valori crescenti dell'argomento (es. "time ./t3 1", poi
+"time ./t3 2") e interpretare il risultato, anche in base alla %CPU
+visualizzata da "top" per t3.
+
+<pre>::::::::::::::<br>t3.c<br>::::::::::::::<br>#include &lt;pthread.h&gt;<br>#include &lt;stdio.h&gt;<br>#include &lt;stdlib.h&gt;<br>#include &lt;string.h&gt;<br><br><br>void *tbody(void *arg)<br>{<br>        int i,j;<br><br>        for (j=0;j&lt;10;j++) {<br>                for (i=0; i&lt; 500000000; i++);<br>                printf("Thread %c %d\n",*(char *)arg,j);<br>        }<br><br>        pthread_exit(NULL);<br>}<br><br>int main(int argc, char *argv[])<br>{<br>        pthread_t t[10];<br>        void *status;<br><br>	char *a;<br>        int i,n;<br><br>        if (argc!=2) { fprintf(stderr,"Passare un argomento da 1 a 10\n"); exit(1);};<br><br>        n=atoi(argv[1]);<br><br>        if (n&lt;1 || n &gt;10) { fprintf(stderr,"Passare un argomento da 1 a 10\n"); exit(1);};<br><br>	a=(char *)malloc(11);<br>        strcpy(a,"abcdefghij");<br><br>        for(i=0;i&lt;n;i++)<br>                 pthread_create(&amp;t[i], NULL, tbody, (void *)&amp;a[i]);<br><br>        for(i=0;i&lt;n;i++) pthread_join(t[i], &amp;status);<br><br>	return 0;<br>}<br><br><br>::::::::::::::<br><br></pre>L'esempio seguente evidenzia i problemi di "<span style="font-weight: bold;">corse critiche</span>" con le
+variabili condivise. <br>La variabile n è inizializzata a 10; un thread la
+incrementa un numero k di volte, passato come argomento al programma;
+l'altro thread la decrementa per lo stesso numero di volte.<br>Ci si
+potrebbe aspettare che al termine la variabile valesse nuovamente 10,
+tuttavia, per k
+sufficientemente grande la variabile finisce per avere valori anche
+molto diversi. Nella parte del corso sulla sincronizzazione di processi
+e threads e programmazione concorrente si studia come risolvere
+questi problemi regolando il traffico nell'accesso a dati condivisi. <br><pre>::::::::::::::<br>race.c<br>::::::::::::::<br><br>#include &lt;pthread.h&gt;<br>#include &lt;stdio.h&gt;<br>#include &lt;stdlib.h&gt;<br><br>int k;<br>int n=10;<br><br>void *tbody(void *arg)<br>{<br><br>        int j;<br><br>        for (j=0;j&lt;k;j++)  n++;<br><br>        pthread_exit(NULL); <br>}<br><br>int main(int argc, char *argv[])<br>{<br>        int j;<br>        pthread_t t;<br><br>	if (argc!=2) {<br>		fprintf(stderr,"Chiamare con un argomento numerico\n");<br>		exit(1);<br>	}<br> <br>        k = atoi(argv[1]);<br><br>        pthread_create(&amp;t, NULL, tbody, NULL);<br><br>        for (j=0;j&lt;k;j++)  n--;<br><br>        pthread_join(t, NULL);<br><br>        printf(" n = %d \n",n);<br><br>	return 0;<br>}<br></pre><span style="font-family: monospace;"></span><pre>::::::::::::::<br></pre>
+
+</body></html>
