@@ -9,10 +9,11 @@ All'interno troverai vari progetti suddivisi per corsi, esami o aree tematiche. 
 - Basi di dati e sistemi informativi
 - Programmazione (Java, Python, C, ecc.)
 - Architettura degli elaboratori
-- Sistemi operativi
-- Sicurezza informatica
+- Sistemi operativi  (WIP)
+- Sicurezza informatica (WIP)
 - Reti di calcolatori
-- Intelligenza artificiale
+- Computazione quantistica
+- Intelligenza artificiale (WIP)
 - Progetti software (con e senza GUI)
 - Report, relazioni tecniche e documentazione
 
