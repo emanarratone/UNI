@@ -13,9 +13,9 @@ typedef struct upo_queue_node_s{
 
 struct upo_queue_s
 {
-    upo_queue_node_t *top; /**< The front of the list. */
-    upo_queue_node_t *bottom; //ultimo elemento della lista, per avere O(1), viva l'anarchia, fuoco al commissariato
-    size_t size; /**< The size of the list. This field allows to guarantee a constant complexity for the `size` operation. */
+    upo_queue_node_t *top; 
+    upo_queue_node_t *bottom; //ultimo elemento della lista, per avere O(1)
+    size_t size; 
 };
 
 #endif // QUEUE_PRIVATE_H_INCLUDED
