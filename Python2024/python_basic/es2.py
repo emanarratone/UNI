@@ -5,6 +5,7 @@ i = 0
 for el in tup:
     tup_val = tup[i]
     x = ord(string[i]) + tup_val
-    res += chr(x)           # += appena il carattere alla fine della stringa
+    res += chr(x)           # += appende il carattere alla fine della stringa
     i = i + 1
 print(res)
+
