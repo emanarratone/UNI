@@ -1,4 +1,4 @@
-# Algoritmi1
+# Algoritmi e Strutture Dati
 
 Questa directory contiene materiali, esercizi e implementazioni relativi al corso di **Algoritmi 1**. La maggior parte dei file è scritta in linguaggio **C**.
 
@@ -9,11 +9,11 @@ Questa directory contiene materiali, esercizi e implementazioni relativi al cors
   - Stack
   - Code
   - Alberi
+  - Tabelle Hash (Linear probing e Separate chaining)
 
 Altre cartelle e file possono contenere:
 - Esercizi
-- Esempi svolti a lezione
-- Soluzioni di compiti
+- File per il settaggio corretto dell'ambiente e/o dei test
 
 ## Come compilare ed eseguire
 
