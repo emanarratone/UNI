@@ -14,7 +14,7 @@ void upo_hex_fprint(FILE *stream, const void *p, size_t n){
 int main(){
     char *s = "Hello, World!";
     char cary[] = "GNU is Not Unix";
-    char larry[] = "i gabinetti nella villa non ci stanno la gente va a urinare nei giardinetti e puzza come le la le latrine";
+    char larry[] = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua";
 
     fprintf(stdout, "%s\n", s);
     upo_hex_fprint(stdout, s, strlen(s));
