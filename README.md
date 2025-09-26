@@ -1,18 +1,17 @@
 # UNI
 
-Questa cartella contiene una raccolta di progetti e repository sviluppati durante il mio percorso universitario.
+Questa cartella contiene una raccolta di progetti ed appunti sviluppati durante il mio percorso universitario.
 
 ## Contenuto
 
-All'interno troverai vari progetti suddivisi per corsi, esami o aree tematiche. I progetti spaziano da esercitazioni pratiche a progetti più strutturati, comprendendo ambiti come:
+All'interno troverai vari progetti suddivisi per corsi, esami o aree tematiche. I progetti spaziano da esercitazioni pratiche a programmi più strutturati, comprendendo ambiti come:
 
 - Basi di dati e sistemi informativi
 - Programmazione (Java, Python, C, ecc.)
 - Architettura degli elaboratori
-- Sicurezza informatica (WIP)
 - Reti di calcolatori
 - Computazione quantistica
-- Intelligenza artificiale (WIP)
+- Intelligenza artificiale
 - Progetti software (con e senza GUI)
 - Report, relazioni tecniche e documentazione
 
