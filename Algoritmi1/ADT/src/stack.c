@@ -75,7 +75,7 @@ void upo_stack_pop(upo_stack_t stack, int destroy_data)
 void* upo_stack_top(const upo_stack_t stack)
 {
 
-    if(stack!=NULL && stack->top != NULL) return stack->top->data;     //chiedere al prof
+    if(stack!=NULL && stack->top != NULL) return stack->top->data;
     else return NULL;
 }
 
