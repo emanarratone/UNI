@@ -13,7 +13,7 @@ L'obiettivo principale è dimostrare come, tramite uno scambio di stati entangle
 
 Il progetto è composto da due simulazioni:
 - Una **senza attacco** (`QIA.ipynb`), in cui il protocollo si comporta correttamente in un ambiente ideale.
-- Una **con attacco** (`QIA-Eve.ipynb`), in cui Eve interferisce con il canale quantistico per osservare l'effetto sull'autenticazione.
+- Una **con attacco** (`QIA-Eve.ipynb`), in cui un intercettatore Eve interferisce con il canale quantistico per poterne osservare l'effetto sull'autenticazione.
 
 ---
 
@@ -32,5 +32,6 @@ In condizioni ideali, i risultati delle misure sono fortemente correlati. Tuttav
 ##  Struttura del repository
 
 - `QIA.ipynb`: notebook che simula il protocollo QIA in assenza di attacco.
-- `QIA-Eve.ipynb`: notebook che include una simulazione con l’interferenza attiva di Eve.
+- `QIA-Eve.ipynb`: notebook che include una simulazione con l’interferenza attiva.
+
 
