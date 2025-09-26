@@ -129,11 +129,11 @@ int partition(void *base, size_t lo, size_t hi, size_t size, upo_sort_comparator
     while(true){
         do{
             i++;
-        }while(i <= hi && cmp(pc+i*size, pc+p*size) <= 0);  //i segni sono fucked up, unexplained
+        }while(i <= hi && cmp(pc+i*size, pc+p*size) <= 0);  
     
         do{
             j--;
-        }while(j >= lo && cmp(pc+j*size, pc+p*size) >= 0);  //i segni sono fucked up, unexplained
+        }while(j >= lo && cmp(pc+j*size, pc+p*size) >= 0);  
         if(i >= j) break;
         swap(pc+i*size, pc+j*size, size);
     }
