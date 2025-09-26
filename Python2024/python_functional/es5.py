@@ -1,3 +1,4 @@
-stringa = 'i gabinetti nella villa non ci stanno'
+stringa = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.'
 
 print(stringa.count(' '))
+
