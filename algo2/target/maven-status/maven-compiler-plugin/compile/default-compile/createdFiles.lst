@@ -1,0 +1,14 @@
+com/kruskal/Kruskal.class
+com/dfs/DFS.class
+com/knapspack/FracKnapsack.class
+com/dijkstra/Dijkstra.class
+com/dijkstra/navigatore/Navigatore.class
+com/FW/FloydWarshall.class
+com/msi/Msi.class
+com/dijkstra/voli/Voli.class
+com/kosaraju/Kosaraju.class
+com/BF/BellmanFord.class
+com/bfs/BFS.class
+com/prim/Prim.class
+com/kruskal/Clustering.class
+com/knapspack/Knapsack.class
